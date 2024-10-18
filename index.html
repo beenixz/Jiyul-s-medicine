@@ -10,19 +10,30 @@
             overflow: hidden;
             position: relative;
             background-color: #f0f0f0;
+            transition: background-color 0.3s; /* 배경색 변화 효과 */
         }
         .triangle {
             position: absolute;
             width: 0;
             height: 0;
-            border-left: 15px solid transparent;  /* 크기 줄임 */
-            border-right: 15px solid transparent; /* 크기 줄임 */
-            border-bottom: 25px solid #3498db;    /* 크기 줄임 */
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 25px solid #FFD700; /* 빛나는 황금색 */
+            transition: border-bottom-color 0.3s; /* 삼각형 색 변화 효과 */
         }
     </style>
 </head>
 <body>
     <script>
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
         function createTriangle() {
             const triangle = document.createElement('div');
             triangle.className = 'triangle';
@@ -35,9 +46,19 @@
             triangle.style.top = `${y}px`;
 
             document.body.appendChild(triangle);
+
+            // 삼각형 색상 변경
+            setInterval(() => {
+                triangle.style.borderBottomColor = getRandomColor();
+            }, 100);  // 0.1초마다 색상 변경
         }
 
-        setInterval(createTriangle, 300);  // 0.3초로 변경
+        // 배경색 변경
+        setInterval(() => {
+            document.body.style.backgroundColor = getRandomColor();
+        }, 100);  // 0.1초마다 배경색 변경
+
+        setInterval(createTriangle, 300);  // 0.3초마다 삼각형 생성
     </script>
 </body>
 </html>
