@@ -3,211 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>송지율의 모르는게 더 많은 약물 정보 탐색</title>
+    <title>무한 삼각형 생성기</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #ffeef8 0%, #ffffff 100%);
             margin: 0;
-            padding: 40px;
-            color: #333;
+            overflow: hidden;
+            position: relative;
+            background-color: #f0f0f0;
         }
-
-        h1 {
-            text-align: center;
-            color: #d5006d;
-            font-size: 2.5em;
-            margin-bottom: 30px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-        }
-
-        input[type="text"] {
-            width: 80%;
-            padding: 15px;
-            margin: 15px 0;
-            border: 2px solid #d81b60;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s, box-shadow 0.3s;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-
-        input[type="text"]:focus {
-            border-color: #c2185b;
-            outline: none;
-            box-shadow: 0 0 5px rgba(224, 64, 251, 0.5);
-        }
-
-        button {
-            background-color: #d81b60;
-            color: white;
-            border: none;
-            padding: 15px 25px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s, transform 0.2s;
-            box-shadow: 0 4px 8px rgba(224, 64, 251, 0.3);
-        }
-
-        button:hover {
-            background-color: #c2185b;
-            transform: translateY(-2px);
-        }
-
-        #result {
-            margin-top: 30px;
-            padding: 20px;
-            border: 1px solid #d81b60;
-            border-radius: 8px;
-            background-color: #ffffff;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            font-size: 1.1em;
-            line-height: 1.6;
-            transition: background-color 0.3s;
-        }
-
-        #result p {
-            margin: 0;
-        }
-
-        /* 미디어 쿼리 추가 */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2em;
-            }
-
-            input[type="text"], button {
-                width: 90%;
-                font-size: 14px;
-                padding: 12px;
-            }
-
-            button {
-                padding: 12px 20px;
-            }
-
-            #result {
-                font-size: 1em;
-            }
-        }
-
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 1.5em;
-            }
-
-            input[type="text"], button {
-                width: 95%;
-                font-size: 12px;
-                padding: 10px;
-            }
-
-            button {
-                padding: 10px 15px;
-            }
-
-            #result {
-                font-size: 0.9em;
-            }
+        .triangle {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;  /* 크기 줄임 */
+            border-right: 15px solid transparent; /* 크기 줄임 */
+            border-bottom: 25px solid #3498db;    /* 크기 줄임 */
         }
     </style>
 </head>
 <body>
-    <h1>송지율의 모르는게 더 많은 약물 정보 탐색</h1>
-    <input type="text" id="drugName" placeholder="약물 이름을 입력하세요">
-    <button onclick="getDrugInfo()">검색</button>
-    
-    <div id="result"></div>
-
     <script>
-       const drugDatabase = {
-          "아스피린": "아스피린은 통증 완화, 항염증, 해열 효과가 있는 약물입니다.",
-    "타이레놀": "타이레놀은 주로 통증과 열을 완화하는 데 사용되는 약물입니다.",
-    "이부프로펜": "이부프로펜은 비스테로이드 항염증제로, 통증과 염증을 완화합니다.",
-    "나프록센": "나프록센은 통증 완화 및 염증 치료에 사용됩니다.",
-    "파라세타몰": "파라세타몰은 통증 및 열을 낮추는 데 효과적입니다.",
-    "항히스타민제": "알레르기 증상을 완화하는 약물입니다.",
-    "아목시실린": "아목시실린은 항생제로, 세균 감염 치료에 사용됩니다.",
-    "메트로니다졸": "메트로니다졸은 항생제로, 특정 세균 및 기생충 감염 치료에 사용됩니다.",
-    "시프로플록사신": "시프로플록사신은 세균 감염 치료에 사용되는 항생제입니다.",
-    "리팜피신": "리팜피신은 결핵 치료에 사용되는 항생제입니다.",
-    "플루옥세틴": "플루옥세틴은 우울증 및 불안 장애 치료에 사용되는 항우울제입니다.",
-    "세트랄린": "세트랄린은 우울증 및 불안 장애에 사용되는 항우울제입니다.",
-    "벤라팍신": "벤라팍신은 우울증 및 불안 장애 치료에 사용됩니다.",
-    "리튬": "리튬은 조울증 치료에 사용되는 기분 안정제입니다.",
-    "발프로산": "발프로산은 간질 및 기분 장애 치료에 사용됩니다.",
-    "메트포르민": "메트포르민은 제2형 당뇨병 치료에 사용되는 약물입니다.",
-    "인슐린": "인슐린은 당뇨병 관리에 필수적인 호르몬입니다.",
-    "아토르바스타틴": "아토르바스타틴은 고지혈증 치료에 사용되는 약물입니다.",
-    "심바스타틴": "심바스타틴은 콜레스테롤 수치를 줄이는 데 도움을 줍니다.",
-    "플라빅스": "플라빅스는 혈전 예방에 사용되는 약물입니다.",
-    "아스피린": "아스피린은 심혈관 질환 예방에 도움을 줍니다.",
-    "발사르탄": "발사르탄은 고혈압 치료에 사용되는 약물입니다.",
-    "로사르탄": "로사르탄은 고혈압 및 심부전 치료에 사용됩니다.",
-    "아모디핀": "아모디핀은 고혈압 치료에 사용되는 약물입니다.",
-    "리시노프릴": "리시노프릴은 심부전 및 고혈압 치료에 사용됩니다.",
-    "디곡신": "디곡신은 심부전 및 심장 리듬 장애 치료에 사용됩니다.",
-    "알프레졸람": "알프레졸람은 불안 장애 치료에 사용되는 약물입니다.",
-    "디아제팜": "디아제팜은 불안 및 불면증 치료에 사용됩니다.",
-    "로라제팜": "로라제팜은 불안 및 수면 장애 치료에 사용됩니다.",
-    "부스피론": "부스피론은 불안 장애 치료에 사용되는 약물입니다.",
-    "세로토닌": "세로토닌은 기분 조절에 중요한 신경전달물질입니다.",
-    "모르핀": "모르핀은 강력한 진통제로, 심한 통증 완화에 사용됩니다.",
-    "코데인": "코데인은 중등도에서 심한 통증 완화에 사용되는 약물입니다.",
-    "펜타조신": "펜타조신은 중등도 통증 완화에 사용되는 진통제입니다.",
-    "트라마돌": "트라마돌은 통증 치료에 사용되는 약물입니다.",
-    "오프이오이드": "오프이오이드는 강력한 진통제로, 심한 통증 치료에 사용됩니다.",
-    "클로피도그렐": "클로피도그렐은 심혈관 질환 예방에 사용됩니다.",
-    "지속형 인슐린": "지속형 인슐린은 당뇨병 관리에 사용됩니다.",
-    "아드레날린": "아드레날린은 알레르기 반응 치료에 사용됩니다.",
-    "에피네프린": "에피네프린은 심장 마비 및 알레르기 반응에 사용됩니다.",
-    "수크랄페이트": "수크랄페이트는 위장관 보호제입니다.",
-    "라니티딘": "라니티딘은 위산 분비 억제제입니다.",
-    "오메프라졸": "오메프라졸은 위산 역류 치료에 사용됩니다.",
-   
-    "인터페론": "인터페론은 바이러스 감염 치료에 사용됩니다.",
+        function createTriangle() {
+            const triangle = document.createElement('div');
+            triangle.className = 'triangle';
 
-    "프레드니손": "프레드니손은 염증 및 면역 반응 억제에 사용됩니다.",
-    "아주나틴": "아주나틴은 항암제입니다.",
-    "시클로포스파미드": "시클로포스파미드는 항암제입니다.",
-    "메토트렉세이트": "메토트렉세이트는 항암제 및 자가면역 질환 치료에 사용됩니다.",
-    "로페라미드": "로페라미드는 설사 치료에 사용되는 약물입니다.",
-    "시메티딘": "시메티딘은 위산 억제제입니다.",
-    "알로페리놀": "알로페리놀은 통풍 치료에 사용됩니다.",
-    "피마바스탄": "피마바스탄은 고콜레스테롤 치료에 사용됩니다.",
-    "테스테스테론": "테스테스테론은 남성 호르몬입니다.",
-    "에스트로겐": "에스트로겐은 여성 호르몬입니다.",
-    "프로게스테론": "프로게스테론은 여성 호르몬입니다.",
-    "플루코나졸": "플루코나졸은 곰팡이 감염 치료에 사용됩니다.",
-    "미코나졸": "미코나졸은 곰팡이 감염 치료에 사용됩니다.",
-    "리팜핀": "리팜핀은 결핵 치료에 사용됩니다.",
-    "디클로페낙": "디클로페낙은 통증 및 염증 치료에 사용됩니다.",
-    "케토프로펜": "케토프로펜은 비스테로이드 항염증제입니다.",
-    "트리메토프림": "트리메토프림은 세균 감염 치료에 사용됩니다.",
-    "아바카비르": "아바카비르는 HIV 치료에 사용됩니다.",
-    "로피나비르": "로피나비르는 HIV 치료에 사용됩니다.",
-    "소포부비르": "소포부비르는 간염 치료에 사용됩니다.",
-    "온단세트론": "온단세트론은 구역질 및 구토 예방에 사용됩니다.",
-    "메토클로프라미드": "메토클로프라미드는 구역질 및 구토 치료에 사용됩니다.",
-    "카르바마제핀": "카르바마제핀은 간질 치료에 사용됩니다.",
-    "페니토인": "페니토인은 간질 치료에 사용되는 약물입니다.",
-    "리튬": "리튬은 조울증 치료에 사용되는 기분 안정제입니다.",
-    "클로자핀": "클로자핀은 정신분열증 치료에 사용됩니다.",
-    "올란자핀": "올란자핀은 정신분열증 및 양극성 장애 치료에 사용됩니다.",
-    "로사르탄": "로사르탄은 고혈압 치료에 사용됩니다."
-        };
+            // 랜덤 위치 생성
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
 
-        function getDrugInfo() {
-            const drugName = document.getElementById('drugName').value;
-            const resultDiv = document.getElementById('result');
+            triangle.style.left = `${x}px`;
+            triangle.style.top = `${y}px`;
 
-            if (drugDatabase[drugName]) {
-                resultDiv.innerHTML = `<p>${drugDatabase[drugName]}</p>`;
-            } else {
-                resultDiv.innerHTML = `<p>해당 약물에 대한 정보가 없습니다.</p>`;
-            }
+            document.body.appendChild(triangle);
         }
+
+        setInterval(createTriangle, 300);  // 0.3초로 변경
     </script>
 </body>
 </html>
